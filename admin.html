@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard | Orders</title>
+    <style>
+        body { font-family: sans-serif; background: #030712; color: white; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: rgba(255,255,255,0.05); }
+        th, td { padding: 15px; border: 1px solid #1e293b; text-align: left; }
+        th { background: #6366f1; }
+        .item-tag { background: #ec4899; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Elite Order Dashboard</h1>
+    <div id="order-list">Loading orders...</div>
+
+    <script>
+        async function fetchOrders() {
+            const res = await fetch('/api/admin/orders');
+            const orders = await res.json();
+            const html = orders.map(o => `
+                <tr>
+                    <td>${new Date(o.date).toLocaleString()}</td>
+                    <td><b>${o.customerName}</b><br>${o.phone}</td>
+                    <td>${o.address}</td>
+                    <td>${o.items.map(i => `<span class="item-tag">${i.name}</span>`).join('')}</td>
+                    <td>${o.total}</td>
+                </tr>
+            `).join('');
+            document.getElementById('order-list').innerHTML = `<table><tr><th>Date</th><th>Customer</th><th>Address</th><th>Items</th><th>Total</th></tr>${html}</table>`;
+        }
+        fetchOrders();
+    </script>
+</body>
+</html>
